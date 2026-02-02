@@ -167,6 +167,8 @@ else:
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 # Imports angepasst für Package vs Script Execution
@@ -211,9 +213,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         # Enable XSS filter
         response.headers["X-XSS-Protection"] = "1; mode=block"
-        # Prevent caching of sensitive data
-        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
+        # Prevent caching of sensitive data if it's API, but allow caching for static
+        # Simple heuristic: if path starts with /api or /chat or /research or /health, no cache
+        path = request.url.path
+        if any(path.startswith(p) for p in ["/chat", "/research", "/health"]):
+             response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+             response.headers["Pragma"] = "no-cache"
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
@@ -233,11 +238,55 @@ app.include_router(chat_router)
 app.include_router(health_router)
 app.include_router(research_router)
 
+# Mount Static Files (Frontend)
+# Wir suchen den 'www' Ordner relativ zu dieser Datei
+www_path = Path(__file__).parent / "www"
+
+if www_path.exists():
+    logger.info(f"Serving static files from {www_path}")
+    # Mount assets, etc.
+    app.mount("/assets", StaticFiles(directory=str(www_path / "assets")), name="assets")
+
+    # Catch-all für SPA Routing (muss am Ende kommen)
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # API requests wurden schon von Routern behandelt.
+        # Check ob Datei existiert (z.B. favicon.ico)
+        try:
+            file_path = (www_path / full_path).resolve()
+            if file_path.is_relative_to(www_path.resolve()) and file_path.exists() and file_path.is_file():
+                 return FileResponse(file_path)
+        except Exception:
+            pass
+
+        # Fallback auf index.html für React Router
+        return FileResponse(www_path / "index.html")
+else:
+    logger.warning(f"Static files not found at {www_path}. Web UI will not be available.")
+
+
 def start():
     """Entry point for the application script."""
     import uvicorn
-    # Use 'lutum_backend.main:app' string if running as package to allow reload?
-    # But simple run works fine.
+    import webbrowser
+    import threading
+    import time
+
+    def open_browser():
+        time.sleep(1.5)
+        print("\n" + "="*50)
+        print("Lutum Veritas is running!")
+        print("Open your browser at: http://localhost:8420")
+        print("="*50 + "\n")
+        try:
+             webbrowser.open("http://localhost:8420")
+        except:
+             pass
+
+    # Wenn wir im Script Mode sind oder uvx, Browser öffnen
+    if os.environ.get("LUTUM_NO_BROWSER") != "1":
+        threading.Thread(target=open_browser, daemon=True).start()
+
     uvicorn.run(app, host="127.0.0.1", port=8420)
 
 if __name__ == "__main__":

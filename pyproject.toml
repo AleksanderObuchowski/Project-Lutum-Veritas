@@ -32,5 +32,8 @@ lutum-veritas = "lutum_backend.main:start"
 [tool.hatch.build.targets.wheel]
 packages = ["lutum", "lutum_backend"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"lutum_backend/www" = "lutum_backend/www"
+
 [tool.hatch.build.targets.sdist]
 include = ["lutum", "lutum_backend", "README.md", "LICENSE"]
