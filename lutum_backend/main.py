@@ -35,6 +35,7 @@ if FROZEN:
     sys.path.insert(0, str(BASE_PATH))
 else:
     # Development: Parent-Ordner für lutum
+    # Wenn wir als Package installiert sind, ist dies vielleicht nicht nötig, aber schadet nicht
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from lutum.core.log_config import get_logger, setup_logging
@@ -106,10 +107,14 @@ if not FROZEN:
 
     def ensure_dependencies():
         """Installiert fehlende Dependencies automatisch beim Start."""
+        # Suche requirements.txt im gleichen Ordner
         requirements_file = Path(__file__).parent / "requirements.txt"
 
         if not requirements_file.exists():
-            logger.warning("requirements.txt nicht gefunden!")
+            # Wenn nicht gefunden, vielleicht sind wir installiert und requirements fehlen?
+            # Wenn wir als Package laufen, verlassen wir uns auf pip install
+            # Aber wir loggen nur warning
+            logger.warning("requirements.txt nicht gefunden (okay if installed as package)!")
             return
 
         # Lese required packages
@@ -164,9 +169,18 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from routes.chat import router as chat_router
-from routes.health import router as health_router
-from routes.research import router as research_router
+# Imports angepasst für Package vs Script Execution
+if __package__ is None or __package__ == '':
+    # Script Mode (z.B. python backend/main.py)
+    sys.path.append(str(Path(__file__).parent))
+    from routes.chat import router as chat_router
+    from routes.health import router as health_router
+    from routes.research import router as research_router
+else:
+    # Package Mode (z.B. uvx run)
+    from .routes.chat import router as chat_router
+    from .routes.health import router as health_router
+    from .routes.research import router as research_router
 
 
 @asynccontextmanager
@@ -219,7 +233,12 @@ app.include_router(chat_router)
 app.include_router(health_router)
 app.include_router(research_router)
 
+def start():
+    """Entry point for the application script."""
+    import uvicorn
+    # Use 'lutum_backend.main:app' string if running as package to allow reload?
+    # But simple run works fine.
+    uvicorn.run(app, host="127.0.0.1", port=8420)
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8420)
+    start()
