@@ -20,7 +20,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License: AGPL-3.0"/>
-  <img src="https://img.shields.io/badge/Version-1.2.4-green.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/Version-1.3.0-green.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/Platform-Windows-lightgrey.svg" alt="Platform"/>
   <img src="https://img.shields.io/badge/Python-3.11+-yellow.svg" alt="Python"/>
 </p>
@@ -73,6 +73,51 @@ Independent comparison of Lutum Veritas vs. ChatGPT Deep Research vs. Perplexity
 
 ---
 
+## 🏆 Thank You, Community!
+
+<p align="center">
+  <img src="assets/champion.png" alt="Veritas Research - Research Without Permission" width="700">
+</p>
+
+### The First 3 Days
+
+**Released:** January 30, 2026 at 09:00
+**Current:** February 2, 2026 at 13:00
+
+**What you've accomplished:**
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/IamLumae/Project-Lutum-Veritas?style=for-the-badge&logo=github&color=yellow" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/forks/IamLumae/Project-Lutum-Veritas?style=for-the-badge&logo=github&color=blue" alt="Forks">
+</p>
+
+📊 **Traffic Stats (First 3 Days):**
+- 🔥 **289 Clones**
+- 👀 **343 Views**
+- 🎯 **11 Points on Hacker News**
+- 🌍 **Featured on:** Hacker News, ComputerBase.de, Hardwareluxx, Product Hunt, DeepLearning.AI Community
+
+---
+
+### You Made This Possible
+
+**In just 3 days, you've helped prove something important:**
+
+A solo developer with an idea can stand toe-to-toe with billion-dollar companies. You don't need permission to build something great. You need passion, code, and a community that believes.
+
+**Every star, every clone, every "this is exactly what I needed" message keeps this project going.**
+
+You're not just users. You're proof that **Research Without Permission** isn't just a tagline - it's a movement.
+
+**Thank you for standing against the giants.** 🚀
+
+---
+
+*Want to join the fight?*
+⭐ **Star the repo** · 🐛 **Report issues** · 💬 **Share with your network** · 🔨 **Contribute on GitHub**
+
+---
+
 ## What is Lutum Veritas?
 
 **Lutum Veritas** is a self-hosted Deep Research Engine that transforms any question into a comprehensive research document. Unlike Perplexity, ChatGPT, or Google's AI Overview, you bring your own API key and everything runs locally.
@@ -122,6 +167,51 @@ Hierarchical research with autonomous areas:
 - **Evidence Grading**: Rate source quality (Level I-VII)
 - **Claim Audit Tables**: Confidence ratings for every claim
 - **200,000+ character outputs**: Full academic depth, no shortcuts
+
+### 🎯 Ask Mode - NEW in v1.3.0
+
+**Quick answers. Verified facts. No hallucinations.**
+
+<p align="center">
+  <img src="assets/ask-mode-demo.gif" alt="Ask Mode Demo - 6-Stage Pipeline with Verification" width="900"/>
+</p>
+
+<p align="center">
+  <em>Ask Mode workflow: Question → C1-C6 stages → Verified Answer with Citations</em>
+</p>
+
+The new Deep Question mode bridges the gap between chat and Deep Research. It's the tool you keep open when your question isn't "big enough" for a 20-minute deep dive, but you need more than an unverified chat response based on outdated, biased training data.
+
+**The difference:**
+- **Regular Chat**: No verification. No live search. Answers from stale training data.
+- **Ask Mode**: Every answer is researched, sourced, and self-verified against a second round of sources.
+
+**When you need a real answer on the first try: this is your mode.**
+
+#### Features
+- **6-Stage Pipeline**: Intent → Knowledge → Search → Scrape → Answer → Verify → Fact-Check (~70-90s)
+- **Dual-Scraping Phases**: First scrape for answer, second scrape for verification
+- **Citation System**: Inline citations [1], [2] for sources + [V1], [V2] for verification
+- **Claim Auditing**: Every claim is fact-checked against additional sources
+- **Auto-Language Detection**: Responds in same language as your question
+- **Separate Sessions**: Ask sessions stored separately from Deep Research
+
+#### Cost
+**Cost? A joke. ~400 queries for $1.**
+
+| Stage | Cost per Query |
+|-------|----------------|
+| C1: Intent Analysis | $0.000839 |
+| C2: Knowledge Requirements | $0.000245 |
+| C3: Search Strategy | $0.000847 |
+| C4: Answer Synthesis | $0.000158 |
+| C5: Claim Audit | $0.000279 |
+| C6: Verification | $0.000049 |
+| **Total per Query** | **~$0.0024** |
+
+- **0.24 cents per answer**
+- **416 verified answers for $1**
+- Model: `google/gemini-2.5-flash-lite-preview-09-2025`
 
 ### 💻 Desktop App Features
 
@@ -185,6 +275,26 @@ cd lutum-desktop
 npm install
 npm run tauri dev
 ```
+
+### Option C: Install via uv (Command Line)
+
+If you prefer command line tools and have [uv](https://github.com/astral-sh/uv) installed:
+
+```bash
+# Install as a tool
+uv tool install git+https://github.com/IamLumae/lutum-veritas.git
+
+# Run
+lutum-veritas
+```
+
+Or run directly without installation (ephemeral):
+
+```bash
+uvx --from git+https://github.com/IamLumae/lutum-veritas.git lutum-veritas
+```
+
+This will start the backend server and automatically open the web interface in your browser.
 
 ---
 
@@ -376,9 +486,9 @@ Need to use Lutum Veritas without AGPL obligations? Commercial licenses are avai
 
 ## Security
 
-**v1.2.4 Installer:**
-- **VirusTotal**: [0/64 detections](https://www.virustotal.com/gui/file/dd58e9fade08d8a0a64e2e0dce90850460ded45d4220d9e115be0e3320e030f7) ✅ **Clean**
-- **SHA256**: `dd58e9fade08d8a0a64e2e0dce90850460ded45d4220d9e115be0e3320e030f7`
+**v1.3.0 Installer:**
+- **VirusTotal**: [0/65 detections](https://www.virustotal.com/gui/file/96faa40b63150632a96486086a2a778a4ec8a19b31dd06907d5178bb961fc287?nocache=1) ✅ **Clean**
+- **SHA256**: `96faa40b63150632a96486086a2a778a4ec8a19b31dd06907d5178bb961fc287`
 
 ---
 
